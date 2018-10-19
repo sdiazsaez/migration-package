@@ -8,6 +8,9 @@
             "email": "sdiaz.sz@gmail.com"
         }
     ],
+    "require": {
+        "illuminate/support": "5.*"
+    },
     "autoload": {
         "psr-4": {
             "Larangular\\MigrationPackage\\": "./src/"
