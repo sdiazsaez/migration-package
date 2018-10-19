@@ -1,0 +1,23 @@
+{
+    "name": "larangular/migration-package",
+    "description": "Laravel migration helper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Simon Diaz",
+            "email": "sdiaz.sz@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Larangular\\MigrationPackage": "./src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Larangular\\MigrationPackage\\MigrationPackageServiceProvider"
+            ]
+        }
+    }
+}
