@@ -51,11 +51,16 @@ class GenerateData extends Command
         }
     }
 
+    private function getValidMigrationPath(CanMigrate $migratePackage): string {
+        return str_replace(base_path(), '', $migratePackage->migrationsPath());
+    }
+
     private function makeMigration(CanMigrate $migratePackage) {
-        $this->info("Starting migration: {$migratePackage->databaseConnection()} - {$migratePackage->migrationsPath()}");
+        $validMigrationPath = $this->getValidMigrationPath($migratePackage);
+        $this->info("Starting migration: {$migratePackage->databaseConnection()} - {$validMigrationPath}");
         $this->call('migrate:refresh', [
             '--database' => $migratePackage->databaseConnection(),
-            '--path' => $migratePackage->migrationsPath()
+            '--path' => $validMigrationPath
         ]);
     }
 
