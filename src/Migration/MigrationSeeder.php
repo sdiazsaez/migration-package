@@ -27,7 +27,8 @@ trait MigrationSeeder {
 
 
     private function migrationSeeder_getExtension(string $filepath): string {
-        return array_pop(explode('.', $filepath));
+        $pieces = explode('.', $filepath);
+        return array_pop($pieces);
     }
 
     private function migrationSeeder_LoadCsv(string $filepath): array {
