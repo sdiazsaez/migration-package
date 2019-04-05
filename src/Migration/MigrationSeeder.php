@@ -25,7 +25,6 @@ trait MigrationSeeder {
         return $response;
     }
 
-
     private function migrationSeeder_getExtension(string $filepath): string {
         $pieces = explode('.', $filepath);
         return array_pop($pieces);
