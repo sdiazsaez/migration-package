@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: simon
- * Date: 3/21/18
- * Time: 00:09
- */
 
 namespace Larangular\MigrationPackage\Migration;
 
@@ -31,14 +25,72 @@ trait MigrationSeeder {
     }
 
     private function migrationSeeder_LoadCsv(string $filepath): array {
-        $rows = array_map('str_getcsv', file($filepath));
+        dump('start: ' . memory_get_usage() / 1024 / 1024);
+
+        $file = file($filepath, FILE_SKIP_EMPTY_LINES);
+        $rows = array_map('str_getcsv', $file);
         $header = array_shift($rows);
         $csv = [];
+        unset($file);
+        dump('loaded file: ' . memory_get_usage() / 1024 / 1024);
         foreach ($rows as $row) {
             $csv[] = array_combine($header, $row);
+            unset($row);
         }
+        dump('done: ' . memory_get_usage() / 1024 / 1024);
+        unset($header);
+        unset($rows);
         return $csv;
     }
 
+    public function migrationSeeder_LoadChunkCsv(string $filepath, ?int $size = 500, $callback) {
+        $header = null;
+        $this->file_get_contents_chunked($filepath, $size,
+            static function ($chunk, &$handle, $iteration) use (&$header, $callback) {
+                $rows = array_map('str_getcsv', $chunk);
+                if ($iteration === 0) {
+                    $header = array_shift($rows);
+                }
+                $csv = [];
+                foreach ($rows as $row) {
+                    $csv[] = array_combine($header, $row);
+                    unset($row);
+                }
+                call_user_func_array($callback, [
+                    $csv,
+                    $iteration,
+                ]);
+                unset($csv);
+                unset($rows);
+            });
+        unset($header);
+    }
+
+    private function file_get_contents_chunked($file, $chunk_size, $callback) {
+        try {
+            $handle = fopen($file, 'rb');
+            $i = 0;
+
+            while (($line = fgets($handle)) !== false) {
+                $chunk[] = $line;
+                if (count($chunk) === $chunk_size) {
+                    call_user_func_array($callback, [
+                        $chunk,
+                        &$handle,
+                        $i,
+                    ]);
+                    $i++;
+                    $chunk = [];
+                }
+            }
+            fclose($handle);
+
+        } catch (Exception $e) {
+            trigger_error("file_get_contents_chunked::" . $e->getMessage(), E_USER_NOTICE);
+            return false;
+        }
+
+        return true;
+    }
 
 }
