@@ -25,19 +25,17 @@ trait MigrationSeeder {
     }
 
     private function migrationSeeder_LoadCsv(string $filepath): array {
-        dump('start: ' . memory_get_usage() / 1024 / 1024);
-
         $file = file($filepath, FILE_SKIP_EMPTY_LINES);
         $rows = array_map('str_getcsv', $file);
         $header = array_shift($rows);
         $csv = [];
         unset($file);
-        dump('loaded file: ' . memory_get_usage() / 1024 / 1024);
+
         foreach ($rows as $row) {
             $csv[] = array_combine($header, $row);
             unset($row);
         }
-        dump('done: ' . memory_get_usage() / 1024 / 1024);
+
         unset($header);
         unset($rows);
         return $csv;
