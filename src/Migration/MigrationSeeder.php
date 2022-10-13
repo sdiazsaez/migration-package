@@ -16,6 +16,12 @@ trait MigrationSeeder {
                     break;
             }
         }
+
+        if(is_null($response)) {
+            d('empty response from '. $filepath);
+            $response = [];
+        }
+
         return $response;
     }
 
