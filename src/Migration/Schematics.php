@@ -23,10 +23,10 @@ trait Schematics {
     public function jsonableColumnType(): string {
         $driverName = DB::connection($this->connection)
                         ->getPdo()
-                        ->getAttribute(PDO::ATTR_DRIVER_NAME);
+                        ->getAttribute(\PDO::ATTR_DRIVER_NAME);
         $dbVersion = DB::connection($this->connection)
                        ->getPdo()
-                       ->getAttribute(PDO::ATTR_SERVER_VERSION);
+                       ->getAttribute(\PDO::ATTR_SERVER_VERSION);
         $isOldVersion = version_compare($dbVersion, '5.7.8', 'lt');
 
         return $driverName === 'mysql' && $isOldVersion
