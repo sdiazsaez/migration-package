@@ -3,21 +3,28 @@
 namespace Larangular\MigrationPackage\Migration;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 trait Schematics {
 
     public function create(\Closure $callback): void {
         Schema::connection($this->connection)
-            ->create($this->name, function(Blueprint $table) use ($callback)
-            {
-                $callback($table);
-            });
+              ->create($this->name, function (Blueprint $table) use ($callback) {
+                  $callback($table);
+              });
+    }
+
+    public function alter(\Closure $callback): void {
+        Schema::connection($this->connection)
+              ->table($this->name, function (Blueprint $table) use ($callback) {
+                  $callback($table);
+              });
     }
 
     public function drop(): void {
-        Schema::connection($this->connection)->drop($this->name);
+        Schema::connection($this->connection)
+              ->drop($this->name);
     }
 
     public function jsonableColumnType(): string {
